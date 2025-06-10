@@ -9,6 +9,7 @@ packages = [{include = "skypro_database_18"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 requests = "^2.32.4"
+psycopg2 = "^2.9.10"
 
 
 [tool.poetry.group.lint.dependencies]
