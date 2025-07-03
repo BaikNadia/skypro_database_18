@@ -1,0 +1,215 @@
+Для просмотра структуры нужно таблицы можно выполнить запрос
+SELECT *
+FROM schema_name.table_name;
+
+Задача 1
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Добавить ограничение chk_products_unit_price на поле unit_price таблицы products (цена должна быть больше 0).
+
+DROP TABLE IF EXISTS itresume15958.products;
+
+CREATE TABLE itresume15958.products (
+    product_id smallint NOT NULL,
+    product_name character varying(40) NOT NULL,
+    supplier_id smallint,
+    category_id smallint,
+    quantity_per_unit character varying(20),
+    unit_price real,
+    units_in_stock smallint,
+    units_on_order smallint,
+    reorder_level smallint,
+    discontinued integer NOT NULL
+);
+
+INSERT INTO itresume15958.products 
+VALUES 
+(66, 'Louisiana Hot Spiced Okra', 2, 2, '24 - 8 oz jars', 17, 4, 100, 20, 0),
+(67, 'Laughing Lumberjack Lager', 16, 1, '24 - 12 oz bottles', 14, 52, 0, 10, 0),
+(68, 'Scottish Longbreads', 8, 3, '10 boxes x 8 pieces', 12.5, 6, 10, 15, 0),
+(69, 'Gudbrandsdalsost', 15, 4, '10 kg pkg.', 36, 26, 0, 15, 0),
+(70, 'Outback Lager', 7, 1, '24 - 355 ml bottles', 15, 15, 10, 30, 0),
+(71, 'Flotemysost', 15, 4, '10 - 500 g pkgs.', 21.5, 26, 0, 0, 0),
+(72, 'Mozzarella di Giovanni', 14, 4, '24 - 200 g pkgs.', 34.7999992, 14, 0, 0, 0),
+(73, 'Röd Kaviar', 17, 8, '24 - 150 g jars', 15, 101, 0, 5, 0),
+(74, 'Longlife Tofu', 4, 7, '5 kg pkg.', 10, 4, 20, 5, 0),
+(75, 'Rhönbräu Klosterbier', 12, 1, '24 - 0.5 l bottles', 7.75, 125, 0, 25, 0),
+(76, 'Lakkalikööri', 23, 1, '500 ml', 18, 57, 0, 20, 0),
+(77, 'Original Frankfurter grüne Soße', 12, 2, '12 boxes', 13, 32, 0, 15, 0);
+
+--Не удаляйте этот код - он нужен для корректной работы тренажера. Пишете свой запрос ниже.
+
+ALTER TABLE itresume15958.products ADD CONSTRAINT chk_products_unit_price CHECK (unit_price > 0);
+SELECT unit_price FROM itresume15958.products;
+
+Задача 2
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Добавить ограничение chk_products_discontinued, что поле discontinued таблицы productsможет содержать только значения 0 или 1.
+
+
+DROP TABLE IF EXISTS itresume15958.products;
+
+CREATE TABLE itresume15958.products (
+    product_id smallint NOT NULL,
+    product_name character varying(40) NOT NULL,
+    supplier_id smallint,
+    category_id smallint,
+    quantity_per_unit character varying(20),
+    unit_price real,
+    units_in_stock smallint,
+    units_on_order smallint,
+    reorder_level smallint,
+    discontinued integer NOT NULL
+);
+
+INSERT INTO itresume15958.products 
+VALUES 
+(66, 'Louisiana Hot Spiced Okra', 2, 2, '24 - 8 oz jars', 17, 4, 100, 20, 0),
+(67, 'Laughing Lumberjack Lager', 16, 1, '24 - 12 oz bottles', 14, 52, 0, 10, 0),
+(68, 'Scottish Longbreads', 8, 3, '10 boxes x 8 pieces', 12.5, 6, 10, 15, 0),
+(69, 'Gudbrandsdalsost', 15, 4, '10 kg pkg.', 36, 26, 0, 15, 0),
+(70, 'Outback Lager', 7, 1, '24 - 355 ml bottles', 15, 15, 10, 30, 0),
+(71, 'Flotemysost', 15, 4, '10 - 500 g pkgs.', 21.5, 26, 0, 0, 0),
+(72, 'Mozzarella di Giovanni', 14, 4, '24 - 200 g pkgs.', 34.7999992, 14, 0, 0, 0),
+(73, 'Röd Kaviar', 17, 8, '24 - 150 g jars', 15, 101, 0, 5, 0),
+(74, 'Longlife Tofu', 4, 7, '5 kg pkg.', 10, 4, 20, 5, 0),
+(75, 'Rhönbräu Klosterbier', 12, 1, '24 - 0.5 l bottles', 7.75, 125, 0, 25, 0),
+(76, 'Lakkalikööri', 23, 1, '500 ml', 18, 57, 0, 20, 0),
+(77, 'Original Frankfurter grüne Soße', 12, 2, '12 boxes', 13, 32, 0, 15, 0);
+
+
+--Не удаляйте этот код - он нужен для корректной работы тренажера. Пишете свой запрос ниже.
+
+ALTER TABLE itresume15958.products ADD CONSTRAINT chk_products_discontinued CHECK (discontinued IN (0, 1));
+SELECT discontinued FROM itresume15958.products;
+
+Задача 3
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Создать новую таблицу discontinued_products, содержащую все продукты, снятые с продажи из таблицы skytask.products (discontinued равен 1).
+
+drop table if exists itresume15958.discontinued_products;
+
+--Не удаляйте этот код - он нужен для корректной работы тренажера. Пишете свой запрос ниже.
+CREATE TABLE itresume15958.discontinued_products AS
+SELECT *
+FROM skytask.products
+WHERE discontinued = 1;
+SELECT * from itresume15958.discontinued_products;
+
+Задача 4
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Создать таблицу student с полями student_id (тип serial), first_name (тип varchar), last_name (тип varchar), birthday (тип date), phone (тип varchar).
+
+
+drop table if exists itresume15958.student;
+
+--Не удаляйте этот код - он нужен для корректной работы тренажера. Пишете свой запрос ниже.
+
+CREATE TABLE itresume15958.student (
+    student_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    birthday DATE,
+    phone VARCHAR(20)
+);
+
+SELECT * FROM itresume15958.student
+
+Задача 5
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Добавить в таблицу student колонку middle_name (тип varchar).
+
+drop table if exists itresume15958.student;
+
+create table itresume15958.student
+(
+	student_id serial,
+	first_name varchar,
+	last_name varchar,
+	birthday date,
+	phone varchar
+);
+
+--Не удаляйте этот код - он нужен для корректной работы тренажера. Пишете свой запрос ниже.
+ALTER TABLE itresume15958.student ADD COLUMN middle_name VARCHAR;
+SELECT * FROM itresume15958.student;
+
+Задача 6
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Удалить колонку middle_name из таблицы student.
+
+drop table if exists itresume15958.student;
+
+create table itresume15958.student
+(
+	student_id serial,
+	first_name varchar,
+	last_name varchar,
+	birthday date,
+	phone varchar
+);
+
+alter table itresume15958.student add column middle_name varchar;
+ALTER table itresume15958.student drop column middle_name;
+
+Задача 6
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Удалить колонку middle_name из таблицы student.
+
+drop table if exists itresume15958.student;
+
+create table itresume15958.student
+(
+	student_id serial,
+	first_name varchar,
+	last_name varchar,
+	birthday date,
+	phone varchar
+);
+
+alter table itresume15958.student add column middle_name varchar;
+ALTER table itresume15958.student drop column middle_name;
+
+Задача 7
+Напишите SQL-запрос для произведения следующих изменений в базе данных: В таблице student переименовать колонку birthday в birth_date.
+
+drop table if exists itresume15958.student;
+
+create table itresume15958.student
+(
+	student_id serial,
+	first_name varchar,
+	last_name varchar,
+	birthday date,
+	phone varchar
+);
+ALTER table itresume15958.student rename birthday to birth_date;
+
+Задача 8
+Напишите SQL-запрос для произведения следующих изменений в базе данных: В таблице student изменить тип данных колонки phone на varchar(32).
+
+drop table if exists itresume15958.student;
+
+create table itresume15958.student
+(
+	student_id serial,
+	first_name varchar,
+	last_name varchar,
+	birthday date,
+	phone varchar
+);
+ALTER TABLE itresume15958.student 
+
+ALTER COLUMN phone TYPE VARCHAR(32);
+
+Задача 9
+Напишите SQL-запрос для произведения следующих изменений в базе данных: Удалить все данные из таблицы student со сбросом идентификатора в исходное состояние.
+
+drop table if exists itresume15958.student;
+
+create table itresume15958.student
+(
+	student_id serial,
+	first_name varchar,
+	last_name varchar,
+	birthday date,
+	phone varchar
+);
+
+INSERT INTO itresume15958.student (first_name, last_name, birthday, phone) VALUES
+('John', 'Doe', '1990-05-15', '123-456-7890'),
+('Alice', 'Smith', '1995-08-21', '987-654-3210'),
+('Bob', 'Johnson', '1988-11-30', '555-123-4567');
+TRUNCATE table itresume15958.student restart IDENTITY
