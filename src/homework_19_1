@@ -1,0 +1,52 @@
+Домашняя работа 19.1
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: Название компании заказчика (company_name в таблице skytask.customers) и имя и фамилия сотрудника, работающего над заказом этой компании (таблица skytask.employees), когда и заказчик и сотрудник зарегистрированы в городе London, а доставку заказа (таблица skytask.orders) ведет компания United Package (company_name в таблице skytask.shippers).
+
+SELECT c.company_name AS customer_company,e.first_name || ' ' || e.last_name AS employee_name
+FROM skytask.orders o
+JOIN skytask.customers c ON o.customer_id = c.customer_id
+JOIN skytask.employees e ON o.employee_id = e.employee_id
+JOIN skytask.shippers s ON o.ship_via = s.shipper_id
+WHERE c.city = 'London' AND e.city = 'London'AND s.company_name = 'United Package';
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: Наименование продукта, количество товара (product_name и units_in_stock в таблице skytask.products), имя поставщика и его телефон (contact_name и phone в таблице skytask.suppliers) для таких продуктов, которые не сняты с продажи (поле discontinued не равно 1) и которых меньше 25 и которые в категориях Dairy Products и Condiments (category_name в таблице skytask.categories). Отсортировать результат по возрастанию количества оставшегося товара.
+
+SELECT 
+    p.product_name,
+    p.units_in_stock,
+    s.contact_name AS supplier_name,
+    s.phone AS supplier_phone
+FROM 
+    skytask.products p
+JOIN 
+    skytask.suppliers s ON p.supplier_id = s.supplier_id
+JOIN 
+    skytask.categories c ON p.category_id = c.category_id
+WHERE 
+    p.discontinued <> 1
+    AND p.units_in_stock < 25
+    AND TRIM(LOWER(c.category_name)) IN ('dairy products', 'condiments')
+ORDER BY 
+    p.units_in_stock ASC;
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: Список компаний заказчиков (company_name из таблицы skytask.customers), не сделавших ни одного заказа.
+
+Реализуйте задачу с помощью подзапроса.
+
+SELECT 
+    c.company_name
+FROM 
+    skytask.customers c
+WHERE 
+    c.customer_id NOT IN (
+        SELECT DISTINCT o.customer_id
+        FROM skytask.orders o
+    ); 
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: уникальные названия продуктов, которых заказано ровно 10 единиц (количество заказанных единиц в колонке quantity таблицы skytask.order_details).
+
+Реализуйте задачу с помощью подзапроса.
+
+SELECT DISTINCT p.product_name
+FROM skytask.products p
+WHERE p.product_id IN (SELECT od.product_id FROM skytask.order_details od WHERE od.quantity = 10);
