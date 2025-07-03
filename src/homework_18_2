@@ -1,0 +1,121 @@
+Для просмотра структуры таблицы нужно выполнить запрос
+SELECT *
+FROM skytask.table_name;
+
+1. Простые SQL-запросы
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: "имя контакта" и "город" (contact_name, country) из таблицы skytask.customers (только эти две колонки). Используйте таблицу customers.
+
+SELECT contact_name, country FROM skytask.customers;
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: идентификатор заказа и разницу между датами формирования (order_date) заказа и его отгрузкой (shipped_date) - назовите столбец difference из таблицы skytask.orders.
+
+SELECT order_id, (shipped_date - order_date) AS difference
+FROM skytask.orders;
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: все города city без повторов, в которых зарегистрированы заказчики (skytask.customers)
+
+SELECT DISTINCT city FROM skytask.customers;
+
+Напишите SQL-запрос для вывода следующей информации из базы данных: количество заказов (таблица skytask.orders)
+
+SELECT COUNT(*) AS total_orders 
+FROM skytask.orders;
+
+Напишите SQL-запрос для вывода следующей информации: количество стран, в которые отгружался товар (таблица skytask.orders, колонка ship_country)
+
+SELECT COUNT(DISTINCT ship_country) AS country_count
+FROM skytask.orders;
+
+2. SQL-запросы на фильтрацию и сортировку
+
+Напишите SQL-запрос для вывода следующей информации: заказы, доставленные в страны France, Germany, Spain (таблица skytask.orders, колонка ship_country)
+
+SELECT * FROM skytask.orders WHERE ship_country IN ('France', 'Germany', 'Spain');
+
+Напишите SQL-запрос для вывода следующей информации: уникальные города и страны, куда отправлялись заказы, отсортировать по странам и городам (таблица skytask.orders, колонки ship_country, ship_city)
+
+SELECT DISTINCT ship_city, ship_country
+FROM skytask.orders
+ORDER BY ship_country, ship_city;
+
+Напишите SQL-запрос для вывода следующей информации: сколько дней в среднем уходит на доставку товара в Германию (таблица skytask.orders, колонки order_date, shipped_date, ship_country)
+
+SELECT 
+    AVG(shipped_date - order_date) AS avg_days
+FROM 
+    skytask.orders
+WHERE 
+    TRIM(ship_country) = 'Germany'
+    AND shipped_date IS NOT NULL;
+
+Напишите SQL-запрос для вывода следующей информации: минимальную и максимальную цену среди продуктов, не снятых с продажи (таблица skytask.products, колонки unit_price, discontinued не равно 1)
+
+SELECT 
+    MIN(unit_price) AS min_price,
+    MAX(unit_price) AS max_price
+FROM 
+    skytask.products
+WHERE 
+    discontinued <> 1;
+
+Напишите SQL-запрос для вывода следующей информации: минимальную и максимальную цену среди продуктов, не снятых с продажи и которых имеется не меньше 20 (таблица skytask.products, колонки unit_price, units_in_stock, discontinuedне равно 1)
+
+SELECT MIN(unit_price) AS min_price,MAX(unit_price) AS max_price
+FROM skytask.products WHERE discontinued <> 1
+AND units_in_stock >= 20;
+
+3. SQL-запросы на группировку данных
+
+Напишите SQL-запрос для вывода следующей информации: заказы, отправленные в города, заканчивающиеся на 'burg'. Вывести без повторений две колонки (город, страна) (таблица skytask.orders, колонки ship_city, ship_country)
+
+SELECT DISTINCT ship_city AS city, ship_country AS country
+FROM skytask.orders WHERE ship_city ILIKE '%burg'
+ORDER BY country, city;
+
+Напишите SQL-запрос для вывода следующей информации: из таблицы skytask.orders идентификатор заказа, идентификатор заказчика, вес и страну отгрузки. Заказ отгружен в страны, начинающиеся на 'P' (англ.). Результат отсортирован по весу (по убыванию). Вывести первые 10 записей.
+
+SELECT order_id, customer_id, freight AS weight, ship_country
+FROM skytask.orders
+WHERE ship_country LIKE 'P%'
+ORDER BY weight DESC
+LIMIT 10;
+
+Напишите SQL-запрос для вывода следующей информации: имя, фамилию и телефон сотрудников, у которых в данных отсутствует регион (таблица skytask.employees)
+
+SELECT first_name AS name, last_name AS surname, home_phone AS phone
+FROM skytask.employees
+WHERE region IS NULL;
+
+Напишите SQL-запрос для вывода следующей информации: количество поставщиков (skytask.suppliers) в каждой из стран. Результат отсортировать по убыванию количества поставщиков в стране.
+
+SELECT country, COUNT(*) AS supplier_count
+FROM skytask.suppliers
+WHERE country IS NOT NULL
+GROUP BY country
+ORDER BY supplier_count DESC;
+
+Напишите SQL-запрос для вывода следующей информации: суммарный вес заказов (в которых известен регион) по странам, но вывести только те результаты, где суммарный вес на страну больше 2750. Отсортировать по убыванию суммарного веса (таблица skytask.orders, колонки ship_region, ship_country, freight)
+
+SELECT ship_country AS country,SUM(freight) AS total_weight
+FROM skytask.orders
+WHERE ship_region IS NOT NULL AND TRIM(ship_region) <> ''
+GROUP BY ship_country
+HAVING SUM(freight) > 2750
+ORDER BY total_weight DESC;
+
+Напишите SQL-запрос для вывода следующей информации: страны, в которых зарегистрированы и заказчики (skytask.customers) и поставщики (skytask.suppliers) и работники (skytask.employees).
+
+SELECT country FROM skytask.customers
+INTERSECT
+SELECT country FROM skytask.suppliers
+INTERSECT
+SELECT country FROM skytask.employees;
+
+Напишите SQL-запрос для вывода следующей информации: страны, в которых зарегистрированы и заказчики (skytask.customers) и поставщики (skytask.suppliers), но не зарегистрированы работники (skytask.employees).
+
+SELECT country FROM skytask.customers
+INTERSECT
+SELECT country FROM skytask.suppliers
+EXCEPT
+SELECT country FROM skytask.employees;
